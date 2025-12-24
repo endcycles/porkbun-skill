@@ -18,7 +18,7 @@ Porkbun API: Returns success/failure
 Claude Code: Reports result to you
 ```
 
-No Docker. No MCP server. No middleware. Just direct API calls using curl.
+No Docker. No MCP server. No middleware. Just direct API calls via Python script.
 
 ## Why a Skill Instead of MCP?
 
@@ -64,6 +64,34 @@ Edit `.env` with your Porkbun API credentials:
 export PORKBUN_API_KEY=pk1_your_api_key_here
 export PORKBUN_SECRET_API_KEY=sk1_your_secret_key_here
 ```
+
+## CLI Script
+
+The skill includes a Python CLI (`scripts/porkbun.py`) that handles authentication automatically:
+
+```bash
+# Test connection
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py ping
+
+# List domains
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py domains
+
+# DNS operations
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns list example.com
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns create example.com A 1.2.3.4 www 600
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns get-type example.com A www
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns edit-type example.com A 5.6.7.8 www
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns delete example.com 123456789
+
+# Glue records (multiple IPs supported)
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue list example.com
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue create example.com ns1 192.168.1.1 192.168.1.2
+
+# Full help
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py help
+```
+
+No dependencies required - uses Python standard library only.
 
 ## Usage Examples
 
@@ -204,44 +232,38 @@ Glue records are required when using your own domain's nameservers (e.g., ns1.ex
 
 #### Get Glue Records
 ```bash
-curl -sX POST "https://api.porkbun.com/api/json/v3/domain/getGlueRecords/example.com" \
+curl -sX POST "https://api.porkbun.com/api/json/v3/domain/getGlue/example.com" \
   -H "Content-Type: application/json" \
   -d "{\"apikey\":\"$PORKBUN_API_KEY\",\"secretapikey\":\"$PORKBUN_SECRET_API_KEY\"}"
 ```
 
 #### Create Glue Record
 ```bash
-curl -sX POST "https://api.porkbun.com/api/json/v3/domain/createGlueRecord/example.com" \
+curl -sX POST "https://api.porkbun.com/api/json/v3/domain/createGlue/example.com/ns1" \
   -H "Content-Type: application/json" \
   -d "{
     \"apikey\":\"$PORKBUN_API_KEY\",
     \"secretapikey\":\"$PORKBUN_SECRET_API_KEY\",
-    \"subdomain\":\"ns1\",
-    \"ip\":\"192.168.1.1\"
+    \"ip\":[\"192.168.1.1\",\"192.168.1.2\"]
   }"
 ```
 
 #### Update Glue Record
 ```bash
-curl -sX POST "https://api.porkbun.com/api/json/v3/domain/updateGlueRecord/example.com" \
+curl -sX POST "https://api.porkbun.com/api/json/v3/domain/updateGlue/example.com/ns1" \
   -H "Content-Type: application/json" \
   -d "{
     \"apikey\":\"$PORKBUN_API_KEY\",
     \"secretapikey\":\"$PORKBUN_SECRET_API_KEY\",
-    \"subdomain\":\"ns1\",
-    \"ip\":\"192.168.1.2\"
+    \"ip\":[\"10.0.0.1\"]
   }"
 ```
 
 #### Delete Glue Record
 ```bash
-curl -sX POST "https://api.porkbun.com/api/json/v3/domain/deleteGlueRecord/example.com" \
+curl -sX POST "https://api.porkbun.com/api/json/v3/domain/deleteGlue/example.com/ns1" \
   -H "Content-Type: application/json" \
-  -d "{
-    \"apikey\":\"$PORKBUN_API_KEY\",
-    \"secretapikey\":\"$PORKBUN_SECRET_API_KEY\",
-    \"subdomain\":\"ns1\"
-  }"
+  -d "{\"apikey\":\"$PORKBUN_API_KEY\",\"secretapikey\":\"$PORKBUN_SECRET_API_KEY\"}"
 ```
 
 ---
