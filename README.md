@@ -97,6 +97,54 @@ curl -sX POST "https://api.porkbun.com/api/json/v3/domain/updateNs/example.com" 
 
 ---
 
+### Glue Records
+
+Glue records are required when using your own domain's nameservers (e.g., ns1.example.com for example.com).
+
+#### Get Glue Records
+```bash
+curl -sX POST "https://api.porkbun.com/api/json/v3/domain/getGlueRecords/example.com" \
+  -H "Content-Type: application/json" \
+  -d "{\"apikey\":\"$PORKBUN_API_KEY\",\"secretapikey\":\"$PORKBUN_SECRET_API_KEY\"}"
+```
+
+#### Create Glue Record
+```bash
+curl -sX POST "https://api.porkbun.com/api/json/v3/domain/createGlueRecord/example.com" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"apikey\":\"$PORKBUN_API_KEY\",
+    \"secretapikey\":\"$PORKBUN_SECRET_API_KEY\",
+    \"subdomain\":\"ns1\",
+    \"ip\":\"192.168.1.1\"
+  }"
+```
+
+#### Update Glue Record
+```bash
+curl -sX POST "https://api.porkbun.com/api/json/v3/domain/updateGlueRecord/example.com" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"apikey\":\"$PORKBUN_API_KEY\",
+    \"secretapikey\":\"$PORKBUN_SECRET_API_KEY\",
+    \"subdomain\":\"ns1\",
+    \"ip\":\"192.168.1.2\"
+  }"
+```
+
+#### Delete Glue Record
+```bash
+curl -sX POST "https://api.porkbun.com/api/json/v3/domain/deleteGlueRecord/example.com" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"apikey\":\"$PORKBUN_API_KEY\",
+    \"secretapikey\":\"$PORKBUN_SECRET_API_KEY\",
+    \"subdomain\":\"ns1\"
+  }"
+```
+
+---
+
 ### DNS Records
 
 #### Retrieve All DNS Records

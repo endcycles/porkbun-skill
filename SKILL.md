@@ -4,10 +4,10 @@ description: |
   Manage Porkbun domains and DNS records via API. Use when user asks to:
   - List, check, or manage domains
   - Create/edit/delete DNS records (A, AAAA, CNAME, MX, TXT, NS, SRV)
-  - Configure nameservers or URL forwarding
+  - Configure nameservers, glue records, or URL forwarding
   - Retrieve SSL certificates or manage DNSSEC
   - Check domain availability or pricing
-  Triggers: "porkbun", "dns record", "domain", "nameserver", "A record", "CNAME"
+  Triggers: "porkbun", "dns record", "domain", "nameserver", "glue record", "A record", "CNAME"
 ---
 
 # Porkbun DNS Manager
@@ -89,6 +89,7 @@ curl -sX POST "https://api.porkbun.com/api/json/v3/dns/delete/{domain}/{id}" \
 
 See [references/endpoints.md](references/endpoints.md) for complete API reference including:
 - Domain management (nameservers, availability, pricing)
+- Glue records (for custom nameservers)
 - Advanced DNS filtering (by name/type)
 - SSL certificate retrieval
 - DNSSEC management

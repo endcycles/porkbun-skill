@@ -14,11 +14,12 @@ All endpoints use POST with JSON body. Include auth in every request:
 
 1. [Authentication & General](#authentication--general)
 2. [Domain Management](#domain-management)
-3. [DNS Records](#dns-records)
-4. [Advanced DNS Filtering](#advanced-dns-filtering)
-5. [SSL Certificates](#ssl-certificates)
-6. [DNSSEC](#dnssec)
-7. [URL Forwarding](#url-forwarding)
+3. [Glue Records](#glue-records)
+4. [DNS Records](#dns-records)
+5. [Advanced DNS Filtering](#advanced-dns-filtering)
+6. [SSL Certificates](#ssl-certificates)
+7. [DNSSEC](#dnssec)
+8. [URL Forwarding](#url-forwarding)
 
 ---
 
@@ -75,6 +76,41 @@ Example:
   "ns": ["ns1.example.com", "ns2.example.com"]
 }
 ```
+
+---
+
+## Glue Records
+
+Glue records are required when using your own domain as nameservers (e.g., ns1.example.com for example.com).
+
+### Get Glue Records
+```
+POST /domain/getGlueRecords/{domain}
+```
+Returns all glue records for domain.
+
+### Create Glue Record
+```
+POST /domain/createGlueRecord/{domain}
+```
+Body params:
+- `subdomain` (string): Nameserver subdomain (e.g., "ns1")
+- `ip` (string): IPv4 address for the nameserver
+
+### Update Glue Record
+```
+POST /domain/updateGlueRecord/{domain}
+```
+Body params:
+- `subdomain` (string): Nameserver subdomain to update
+- `ip` (string): New IPv4 address
+
+### Delete Glue Record
+```
+POST /domain/deleteGlueRecord/{domain}
+```
+Body params:
+- `subdomain` (string): Nameserver subdomain to delete
 
 ---
 
