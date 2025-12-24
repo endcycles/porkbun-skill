@@ -60,10 +60,21 @@ python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns create example.com
 python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns edit <domain> <id> <type> <content> [name] [ttl] [prio]
 ```
 
-### Delete DNS Record
+### Get DNS Record by ID
+```bash
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns get example.com 123456789
+```
+
+### Get/Edit/Delete DNS Records by Type
+```bash
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns get-type example.com A www
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns edit-type example.com A 1.2.3.4 www 600
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns delete-type example.com A www
+```
+
+### Delete DNS Record by ID
 ```bash
 python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns delete example.com 123456789
-python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dns delete-type example.com A www
 ```
 
 ### Nameservers
@@ -88,12 +99,15 @@ python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py ssl example.com
 ```bash
 python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue list example.com
 python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue create example.com ns1 192.168.1.1
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue update example.com ns1 192.168.1.2
 python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue delete example.com ns1
 ```
 
 ### DNSSEC
 ```bash
 python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dnssec list example.com
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dnssec create example.com 12345 8 2 abc123...
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py dnssec delete example.com 12345
 ```
 
 ### Help

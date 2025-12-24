@@ -108,6 +108,23 @@ def cmd_dns_delete_by_type(domain, record_type, subdomain=""):
         endpoint += f"/{subdomain}"
     print_json(api_call(endpoint))
 
+def cmd_dns_get_by_type(domain, record_type, subdomain=""):
+    """Get DNS records by type and subdomain"""
+    endpoint = f"/dns/retrieveByNameType/{domain}/{record_type}"
+    if subdomain:
+        endpoint += f"/{subdomain}"
+    print_json(api_call(endpoint))
+
+def cmd_dns_edit_by_type(domain, record_type, content, subdomain="", ttl="600", prio=None):
+    """Edit DNS records by type and subdomain"""
+    endpoint = f"/dns/editByNameType/{domain}/{record_type}"
+    if subdomain:
+        endpoint += f"/{subdomain}"
+    data = {"content": content, "ttl": ttl}
+    if prio:
+        data["prio"] = prio
+    print_json(api_call(endpoint, data))
+
 def cmd_ns_get(domain):
     """Get nameservers"""
     print_json(api_call(f"/domain/getNs/{domain}"))
@@ -151,9 +168,26 @@ def cmd_glue_delete(domain, subdomain):
     """Delete glue record"""
     print_json(api_call(f"/domain/deleteGlueRecord/{domain}", {"subdomain": subdomain}))
 
+def cmd_glue_update(domain, subdomain, ip):
+    """Update glue record"""
+    print_json(api_call(f"/domain/updateGlueRecord/{domain}", {"subdomain": subdomain, "ip": ip}))
+
 def cmd_dnssec_list(domain):
     """List DNSSEC records"""
     print_json(api_call(f"/dns/getDnssecRecords/{domain}"))
+
+def cmd_dnssec_create(domain, key_tag, alg, digest_type, digest):
+    """Create DNSSEC record"""
+    data = {"keyTag": int(key_tag), "alg": int(alg), "digestType": int(digest_type), "digest": digest}
+    print_json(api_call(f"/dns/createDnssecRecord/{domain}", data))
+
+def cmd_dnssec_delete(domain, tag):
+    """Delete DNSSEC record by key tag"""
+    print_json(api_call(f"/dns/deleteDnssecRecord/{domain}/{tag}"))
+
+def cmd_dns_retrieve(domain, record_id):
+    """Retrieve single DNS record by ID"""
+    print_json(api_call(f"/dns/retrieve/{domain}/{record_id}"))
 
 def show_help():
     print("""
@@ -167,11 +201,14 @@ Commands:
   check <domain>                    Check domain availability
   pricing                           Get TLD pricing
 
-  dns list <domain>                 List DNS records
+  dns list <domain>                 List all DNS records
+  dns get <domain> <id>             Get single DNS record by ID
   dns create <domain> <type> <content> [name] [ttl] [prio]
   dns edit <domain> <id> <type> <content> [name] [ttl] [prio]
   dns delete <domain> <id>          Delete record by ID
-  dns delete-type <domain> <type> [subdomain]
+  dns get-type <domain> <type> [subdomain]     Get records by type
+  dns edit-type <domain> <type> <content> [subdomain] [ttl] [prio]
+  dns delete-type <domain> <type> [subdomain]  Delete records by type
 
   ns get <domain>                   Get nameservers
   ns update <domain> <ns1> <ns2>... Update nameservers
@@ -184,15 +221,20 @@ Commands:
 
   glue list <domain>                List glue records
   glue create <domain> <subdomain> <ip>
+  glue update <domain> <subdomain> <ip>
   glue delete <domain> <subdomain>
 
   dnssec list <domain>              List DNSSEC records
+  dnssec create <domain> <keyTag> <alg> <digestType> <digest>
+  dnssec delete <domain> <keyTag>
 
 Examples:
   python3 porkbun.py domains
   python3 porkbun.py dns list example.com
+  python3 porkbun.py dns get example.com 123456789
   python3 porkbun.py dns create example.com A 192.168.1.1 www 600
   python3 porkbun.py dns create example.com MX mail.example.com "" 600 10
+  python3 porkbun.py dns get-type example.com A www
   python3 porkbun.py forward add example.com https://newsite.com "" permanent
 """)
 
@@ -217,12 +259,18 @@ def main():
             subcmd = args[0].lower()
             if subcmd == "list" and len(args) > 1:
                 cmd_dns_list(args[1])
+            elif subcmd == "get" and len(args) >= 3:
+                cmd_dns_retrieve(args[1], args[2])
             elif subcmd == "create" and len(args) >= 4:
                 cmd_dns_create(args[1], args[2], args[3], *args[4:])
             elif subcmd == "edit" and len(args) >= 5:
                 cmd_dns_edit(args[1], args[2], args[3], args[4], *args[5:])
             elif subcmd == "delete" and len(args) >= 3:
                 cmd_dns_delete(args[1], args[2])
+            elif subcmd == "get-type" and len(args) >= 3:
+                cmd_dns_get_by_type(args[1], args[2], args[3] if len(args) > 3 else "")
+            elif subcmd == "edit-type" and len(args) >= 4:
+                cmd_dns_edit_by_type(args[1], args[2], args[3], *args[4:])
             elif subcmd == "delete-type" and len(args) >= 3:
                 cmd_dns_delete_by_type(args[1], args[2], args[3] if len(args) > 3 else "")
             else:
@@ -251,6 +299,8 @@ def main():
                 cmd_glue_list(args[1])
             elif args[0] == "create" and len(args) >= 4:
                 cmd_glue_create(args[1], args[2], args[3])
+            elif args[0] == "update" and len(args) >= 4:
+                cmd_glue_update(args[1], args[2], args[3])
             elif args[0] == "delete" and len(args) >= 3:
                 cmd_glue_delete(args[1], args[2])
             else:
@@ -258,6 +308,10 @@ def main():
         elif cmd == "dnssec" and args:
             if args[0] == "list" and len(args) > 1:
                 cmd_dnssec_list(args[1])
+            elif args[0] == "create" and len(args) >= 6:
+                cmd_dnssec_create(args[1], args[2], args[3], args[4], args[5])
+            elif args[0] == "delete" and len(args) >= 3:
+                cmd_dnssec_delete(args[1], args[2])
             else:
                 show_help()
         elif cmd in ["help", "-h", "--help"]:
