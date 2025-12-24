@@ -85,32 +85,29 @@ Glue records are required when using your own domain as nameservers (e.g., ns1.e
 
 ### Get Glue Records
 ```
-POST /domain/getGlueRecords/{domain}
+POST /domain/getGlue/{domain}
 ```
 Returns all glue records for domain.
 
 ### Create Glue Record
 ```
-POST /domain/createGlueRecord/{domain}
+POST /domain/createGlue/{domain}/{subdomain}
 ```
 Body params:
-- `subdomain` (string): Nameserver subdomain (e.g., "ns1")
-- `ip` (string): IPv4 address for the nameserver
+- `ip` (array): List of IPv4 addresses for the nameserver
 
 ### Update Glue Record
 ```
-POST /domain/updateGlueRecord/{domain}
+POST /domain/updateGlue/{domain}/{subdomain}
 ```
 Body params:
-- `subdomain` (string): Nameserver subdomain to update
-- `ip` (string): New IPv4 address
+- `ip` (array): New list of IPv4 addresses (replaces existing)
 
 ### Delete Glue Record
 ```
-POST /domain/deleteGlueRecord/{domain}
+POST /domain/deleteGlue/{domain}/{subdomain}
 ```
-Body params:
-- `subdomain` (string): Nameserver subdomain to delete
+No additional body params required.
 
 ---
 

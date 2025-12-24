@@ -158,19 +158,19 @@ def cmd_forward_delete(domain, forward_id):
 
 def cmd_glue_list(domain):
     """List glue records"""
-    print_json(api_call(f"/domain/getGlueRecords/{domain}"))
+    print_json(api_call(f"/domain/getGlue/{domain}"))
 
-def cmd_glue_create(domain, subdomain, ip):
-    """Create glue record"""
-    print_json(api_call(f"/domain/createGlueRecord/{domain}", {"subdomain": subdomain, "ip": ip}))
+def cmd_glue_create(domain, subdomain, *ips):
+    """Create glue record (supports multiple IPs)"""
+    print_json(api_call(f"/domain/createGlue/{domain}/{subdomain}", {"ip": list(ips)}))
 
 def cmd_glue_delete(domain, subdomain):
     """Delete glue record"""
-    print_json(api_call(f"/domain/deleteGlueRecord/{domain}", {"subdomain": subdomain}))
+    print_json(api_call(f"/domain/deleteGlue/{domain}/{subdomain}"))
 
-def cmd_glue_update(domain, subdomain, ip):
-    """Update glue record"""
-    print_json(api_call(f"/domain/updateGlueRecord/{domain}", {"subdomain": subdomain, "ip": ip}))
+def cmd_glue_update(domain, subdomain, *ips):
+    """Update glue record (replaces all IPs)"""
+    print_json(api_call(f"/domain/updateGlue/{domain}/{subdomain}", {"ip": list(ips)}))
 
 def cmd_dnssec_list(domain):
     """List DNSSEC records"""
@@ -220,8 +220,8 @@ Commands:
   forward delete <domain> <id>
 
   glue list <domain>                List glue records
-  glue create <domain> <subdomain> <ip>
-  glue update <domain> <subdomain> <ip>
+  glue create <domain> <subdomain> <ip> [ip2...]
+  glue update <domain> <subdomain> <ip> [ip2...]
   glue delete <domain> <subdomain>
 
   dnssec list <domain>              List DNSSEC records
@@ -298,9 +298,9 @@ def main():
             if args[0] == "list" and len(args) > 1:
                 cmd_glue_list(args[1])
             elif args[0] == "create" and len(args) >= 4:
-                cmd_glue_create(args[1], args[2], args[3])
+                cmd_glue_create(args[1], args[2], *args[3:])
             elif args[0] == "update" and len(args) >= 4:
-                cmd_glue_update(args[1], args[2], args[3])
+                cmd_glue_update(args[1], args[2], *args[3:])
             elif args[0] == "delete" and len(args) >= 3:
                 cmd_glue_delete(args[1], args[2])
             else:

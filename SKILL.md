@@ -98,8 +98,8 @@ python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py ssl example.com
 ### Glue Records
 ```bash
 python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue list example.com
-python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue create example.com ns1 192.168.1.1
-python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue update example.com ns1 192.168.1.2
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue create example.com ns1 192.168.1.1 192.168.1.2
+python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue update example.com ns1 10.0.0.1
 python3 ~/.claude/skills/porkbun-skill/scripts/porkbun.py glue delete example.com ns1
 ```
 
