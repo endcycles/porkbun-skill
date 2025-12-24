@@ -1,6 +1,22 @@
 # Porkbun DNS Skill
 
-A Claude Code skill for managing Porkbun domains and DNS records via the Porkbun API.
+A Claude Code skill for managing Porkbun domains and DNS records.
+
+## How It Works
+
+```
+You: "Add an A record for www.example.com pointing to 1.2.3.4"
+  ↓
+Claude Code: Reads your API keys from .env
+  ↓
+Claude Code: Executes curl request to Porkbun API
+  ↓
+Porkbun API: Returns success/failure
+  ↓
+Claude Code: Reports result to you
+```
+
+No Docker. No MCP server. No middleware. Just direct API calls using curl.
 
 ## Requirements
 
